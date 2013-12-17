@@ -1,0 +1,52 @@
+/* 
+    Document   : layout
+    Created on : Jul 11, 2013, 11:13:44 AM
+    Author     : tonglin
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/***************	Main style do not chage  ***************/
+.jQcarousel-inner {float: left; overflow: hidden;}
+.jQcarousel-ul { position: relative; list-style: none; width: 9999px; }
+.jQcarousel-ul li {float: left;}
+.pre, .next {float: left;}
+
+/*************** This style can be modify***************/
+
+.jQcarousel-inner {
+	width: 630px;
+	background: #F0F0F0;
+}
+
+.jQcarousel-ul {
+	margin: 0;
+	padding: 0;
+}
+
+.jQcarousel-ul li {
+	padding: 0;
+	background: #000000;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	margin-left: 5px;
+	margin-right: 5px;
+	width: 200px;
+	height: 110px;
+}
+
+.jQcarousel-ul li img {
+	
+	.margin-bottom: -4px;
+	width: 200px;
+	height: 110px;
+	cursor: pointer;
+	border: 0;
+}
+
+.pre, .next {
+	height: 130px;
+	width: 15px;
+	background: #C0C0C0;
+	cursor: pointer;
+}
