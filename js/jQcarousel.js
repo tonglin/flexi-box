@@ -6,17 +6,27 @@
  * facebook : https://www.facebook.com/atong.lin.5
  */
 (function(flexi) {
-	var defaultSettings = {"animationSpeed": "1000", "arrowOption": "enable", "showItems": "3"};
+	var defaultConfiguration = {"animationSpeed": "1000", "arrowOption": "enable", "showItems": "3"};
 	var settings;
 
 
 	function settingsToJson(settings) {
 		if (settings !== '' && settings !== undefined) {
+			if (settings.substr(-1) === ";") {settings = settings.slice(0, -1);}
 			settings = '{\"' + settings.replace(/:/gi, "\":\"").replace(/;/gi, "\",\"").replace(/\s+/g, '') + '\"}';
 			settings = flexi.parseJSON(settings);
+			if (settings.animationSpeed === undefined) {
+				settings["animationSpeed"] = defaultConfiguration.animationSpeed;
+			}
+			if (settings.arrowOption === undefined) {
+				settings["arrowOption"] = defaultConfiguration.arrowOption;
+			}
+			if (settings.showItems === undefined) {
+				settings["showItems"] = defaultConfiguration.showItems;
+			}
 		}
 		else {
-			settings = defaultSettings;
+			settings = defaultConfiguration;
 		}
 		return settings;
 	}
@@ -24,13 +34,14 @@
 //	function main
 	flexi.fn.felxiCarousel = function(options) {
 		return this.each(function() {
+			//Get settings from file html as string and convert it to Json format
 			var getSettings = flexi(this).attr('data-settings');
 			settings = settingsToJson(getSettings);
 
-
-			var showItems = flexi(this).attr('data-items');
+			var showItems = flexi(this).attr('data-configuration');
 			var arrowOption = flexi(this).attr('data-arrow');
 			var allItems = flexi(this).children().children().children().length;
+
 			flexi(this).children().children('.jQcarousel-ul').css('left', '0');
 
 			//Default option for arrow button
@@ -69,7 +80,7 @@
 		var showItems = flexi(this).parent().attr('data-items');
 		var arrowOption = flexi(this).parent().attr('data-arrow');
 		var allItems = flexi(this).parent().children().children().children().length;
-		item_width = flexi(this).siblings().children().children().outerWidth(true);
+		var item_width = flexi(this).siblings().children().children().outerWidth(true);
 		var left_indent = parseInt(flexi(this).parent().children('.jQcarousel-inner').children('.jQcarousel-ul').css('left')) + item_width;
 
 		var totalLenth = allItems * item_width;
