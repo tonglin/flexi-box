@@ -9,10 +9,16 @@
 	var defaultConfiguration = {"animationSpeed": "1000", "arrowOption": "enable", "showItems": "3"};
 	var settings;
 
-
+	/**
+	 * 
+	 * @param {type} settings
+	 * @returns {_L8.defaultConfiguration|String}
+	 */
 	function settingsToJson(settings) {
 		if (settings !== '' && settings !== undefined) {
-			if (settings.substr(-1) === ";") {settings = settings.slice(0, -1);}
+			if (settings.substr(-1) === ";") {
+				settings = settings.slice(0, -1);
+			}
 			settings = '{\"' + settings.replace(/:/gi, "\":\"").replace(/;/gi, "\",\"").replace(/\s+/g, '') + '\"}';
 			settings = flexi.parseJSON(settings);
 			if (settings.animationSpeed === undefined) {
@@ -31,50 +37,11 @@
 		return settings;
 	}
 
-//	function main
-	flexi.fn.felxiCarousel = function(options) {
-		return this.each(function() {
-			//Get settings from file html as string and convert it to Json format
-			var getSettings = flexi(this).attr('data-settings');
-			settings = settingsToJson(getSettings);
-
-			var showItems = flexi(this).attr('data-configuration');
-			var arrowOption = flexi(this).attr('data-arrow');
-			var allItems = flexi(this).children().children().children().length;
-
-			flexi(this).children().children('.jQcarousel-ul').css('left', '0');
-
-			//Default option for arrow button
-			if (showItems >= allItems) {
-				if (arrowOption == 'disable') {
-					flexi(this).children('.pre').hide();
-					flexi(this).children('.next').hide();
-				} else if (arrowOption == 'visible') {
-					flexi(this).children('.pre').children().css('opacity', '0.4');
-					flexi(this).children('.pre').children().css('cursor', 'default');
-					flexi(this).children('.next').children().css('opacity', '0.4');
-					flexi(this).children('.next').children().css('cursor', 'default');
-				}
-			} else if (showItems < allItems) {
-				if (arrowOption == 'disable') {
-					flexi(this).children('.pre').hide();
-					flexi(this).children('.next').css('cursor', 'pointer');
-				} else if (arrowOption == 'visible') {
-					flexi(this).children('.pre').children().css('opacity', '0.4');
-					flexi(this).children('.pre').children().css('cursor', 'default');
-					flexi(this).children('.next').children().css('cursor', 'pointer');
-				}
-			}
-
-			//Action click on button arrow left and arrow right
-			var pre = flexi(this).children('div.pre');
-			var next = flexi(this).children('div.next');
-			pre.click(goLeft);
-			next.click(goRight);
-		});
-	}
-
-//animation to left or arrow left action
+	/**
+	 * 
+	 * animation to left or arrow left action
+	 * @returns 
+	 */
 	function goLeft() {
 		//Calculate show length aviable
 		var showItems = flexi(this).parent().attr('data-items');
@@ -120,7 +87,11 @@
 		}
 	}
 
-//animation to right or arrow right action
+	/**
+	 * 
+	 * Animation to right or arrow right action
+	 * @returns 
+	 */
 	function goRight() {
 		//Calculate show length aviable
 		var showItems = flexi(this).parent().attr('data-items');
@@ -155,12 +126,58 @@
 				}
 			}
 		}
-
 		//Animation to right
 		if (left_indent > showLenth) {
 			flexi(this).siblings().children(':not(:animated)').animate({
 				'left': left_indent
 			}, 1000);
 		}
+	}
+
+	/**
+	 * Main function
+	 * 
+	 * @param {type} options
+	 * @returns {_L8.flexi.fn@call;each}
+	 */
+	flexi.fn.felxiCarousel = function(options) {
+		return this.each(function() {
+			//Get settings from file html as string and convert it to Json format
+			var getSettings = flexi(this).attr('data-configuration');
+			settings = settingsToJson(getSettings);
+
+			var showItems = flexi(this).attr('data-configuration');
+			var arrowOption = flexi(this).attr('data-arrow');
+			var allItems = flexi(this).children().children().children().length;
+
+			flexi(this).children().children('.jQcarousel-ul').css('left', '0');
+
+			//Default option for arrow button
+			if (showItems >= allItems) {
+				if (arrowOption == 'disable') {
+					flexi(this).children('.pre').hide();
+					flexi(this).children('.next').hide();
+				} else if (arrowOption == 'visible') {
+					flexi(this).children('.pre').children().css('opacity', '0.4');
+					flexi(this).children('.pre').children().css('cursor', 'default');
+					flexi(this).children('.next').children().css('opacity', '0.4');
+					flexi(this).children('.next').children().css('cursor', 'default');
+				}
+			} else if (showItems < allItems) {
+				if (arrowOption == 'disable') {
+					flexi(this).children('.pre').hide();
+					flexi(this).children('.next').css('cursor', 'pointer');
+				} else if (arrowOption == 'visible') {
+					flexi(this).children('.pre').children().css('opacity', '0.4');
+					flexi(this).children('.pre').children().css('cursor', 'default');
+					flexi(this).children('.next').children().css('cursor', 'pointer');
+				}
+			}
+			//Action click on button arrow left and arrow right
+			var pre = flexi(this).children('div.pre');
+			var next = flexi(this).children('div.next');
+			pre.click(goLeft);
+			next.click(goRight);
+		});
 	}
 })(jQuery);
