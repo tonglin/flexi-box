@@ -6,15 +6,13 @@
  * facebook : https://www.facebook.com/atong.lin.5
  */
 (function(flexi) {
-	var defaultConfiguration = {"animationSpeed": "1000", "arrowOption": "enable", "showItems": "3"};
-	var settings;
-
+	var defaultConfiguration = {"animationSpeed": "1000", "arrowOption": "show", "showItems": "3"};
 	/**
 	 * 
-	 * @param {type} settings
+	 * @param {type} configuration
 	 * @returns {_L8.defaultConfiguration|String}
 	 */
-	function settingsToJson(settings) {
+	function getConfigurationToJson(settings) {
 		if (settings !== '' && settings !== undefined) {
 			if (settings.substr(-1) === ";") {
 				settings = settings.slice(0, -1);
@@ -37,53 +35,91 @@
 		return settings;
 	}
 
+	function defaultSetting(configuration, This, arrowPlace) {
+		This = This;
+		arrowPlace = arrowPlace;
+		//Default option for arrow button
+		if (arrowPlace === 'default') {
+			This.children().children('.jQcarousel-ul').css('left', '0');
+			if (parseInt(configuration.showItems) >= configuration.allItems) {
+				if (configuration.arrowOption === 'hide') {
+					This.children('.pre').hide();
+					This.children('.next').hide();
+				} else if (configuration.arrowOption === 'show') {
+					This.children('.pre').css('opacity', '0.4');
+					This.children('.pre').css('cursor', 'default');
+					This.children('.next').css('opacity', '0.4');
+					This.children('.next').css('cursor', 'default');
+				}
+			} else if (parseInt(configuration.showItems) < configuration.allItems) {
+				if (configuration.arrowOption === 'hide') {
+					This.children('.pre').hide();
+					This.children('.next').css('cursor', 'pointer');
+				} else if (configuration.arrowOption === 'show') {
+					This.children('.pre').css('opacity', '0.4');
+					This.children('.pre').css('cursor', 'default');
+					This.children('.next').css('cursor', 'pointer');
+				}
+			}
+		}
+		//default configuration for goLeft action
+		if (arrowPlace === 'goLeft') {
+			if (parseInt(configuration.allItems) > parseInt(configuration.showItems)) {
+				if (configuration.arrowOption === 'show') {
+					This.parent().children('.next').children().css('opacity', '1');
+					This.parent().children('.next').children().disabled = false
+					This.parent().children('.next').children().css('cursor', 'pointer');
+
+					if (configuration.leftIndent == 0 || configuration.leftIndent > 0) {
+						This.children().css('opacity', '0.4');
+						This.children().css('cursor', 'default');
+						This.children().disabled = true;
+					} else if (configuration.leftIndent != 0 || configuration.leftIndent < 0) {
+						This.children().css('opacity', '1');
+						This.children().disabled = false;
+					}
+				} else if (configuration.arrowOption === 'hide') {
+					This.parent().children('.next').show();
+					This.parent().children('.next').css('cursor', 'pointer');
+
+					if (configuration.leftIndent == 0 || configuration.leftIndent > 0) {
+						This.hide();
+					} else if (configuration.leftIndent != 0 || configuration.leftIndent < 0) {
+						This.show();
+					}
+				}
+			}
+		}
+
+	}
+
 	/**
 	 * 
 	 * animation to left or arrow left action
 	 * @returns 
 	 */
 	function goLeft() {
+		var This = flexi(this);
+		var getConfiguration = This.parent().attr('data-configuration');
+		var configuraltion = getConfigurationToJson(getConfiguration);
+		var allItems = parseInt(This.parent().children().children().children().length);
+		
 		//Calculate show length aviable
-		var showItems = flexi(this).parent().attr('data-items');
-		var arrowOption = flexi(this).parent().attr('data-arrow');
-		var allItems = flexi(this).parent().children().children().children().length;
-		var item_width = flexi(this).siblings().children().children().outerWidth(true);
-		var left_indent = parseInt(flexi(this).parent().children('.jQcarousel-inner').children('.jQcarousel-ul').css('left')) + item_width;
-
-		var totalLenth = allItems * item_width;
-		var showLenth = ((showItems - 1) * item_width) - totalLenth;
-
-		if (allItems > showItems) {
-			if (arrowOption == 'visible') {
-				flexi(this).parent().children('.next').children().css('opacity', '1');
-				flexi(this).parent().children('.next').children().disabled = false
-				flexi(this).parent().children('.next').children().css('cursor', 'pointer');
-
-				if (left_indent == 0 || left_indent > 0) {
-					flexi(this).children().css('opacity', '0.4');
-					flexi(this).children().css('cursor', 'default');
-					flexi(this).children().disabled = true;
-				} else if (left_indent != 0 || left_indent < 0) {
-					flexi(this).children().css('opacity', '1');
-					flexi(this).children().disabled = false;
-				}
-			} else if (arrowOption == 'disable') {
-				flexi(this).parent().children('.next').show();
-				flexi(this).parent().children('.next').css('cursor', 'pointer');
-
-				if (left_indent == 0 || left_indent > 0) {
-					flexi(this).hide();
-				} else if (left_indent != 0 || left_indent < 0) {
-					flexi(this).show();
-				}
-			}
-		}
-
+		var itemWidth = parseInt(This.siblings().children().children().outerWidth(true));
+		var leftIndent = parseInt(This.parent().children('.jQcarousel-inner').children('.jQcarousel-ul').css('left')) + itemWidth;
+		var totalLenth = parseInt(allItems * itemWidth);
+		var showLenth = ((parseInt(configuraltion.showItems) - 1) * itemWidth) - totalLenth;
+		configuraltion["allItems"] = allItems;
+		configuraltion["itemWidth"] = itemWidth;
+		configuraltion["leftIndent"] = leftIndent;
+		configuraltion["totalLenth"] = totalLenth;
+		configuraltion["showLenth"] = showLenth;
+		defaultSetting(configuraltion, This, 'goLeft');
 		//Animation to left
-		if (left_indent - item_width < 0) {
-			flexi(this).siblings().children(':not(:animated)').animate({
-				'left': left_indent
-			}, 1000);
+		if (leftIndent - itemWidth < 0) {
+			This.siblings().children(':not(:animated)').animate({
+				'left': leftIndent
+			}, parseInt(configuraltion.animationSpeed));
 		}
 	}
 
@@ -143,39 +179,16 @@
 	flexi.fn.felxiCarousel = function(options) {
 		return this.each(function() {
 			//Get settings from file html as string and convert it to Json format
-			var getSettings = flexi(this).attr('data-configuration');
-			settings = settingsToJson(getSettings);
+			var This = flexi(this);
+			var getConfiguration = This.attr('data-configuration');
+			var configuraltion = getConfigurationToJson(getConfiguration);
+			var allItems = This.children().children().children().length;
+			configuraltion["allItems"] = allItems;
 
-			var showItems = flexi(this).attr('data-configuration');
-			var arrowOption = flexi(this).attr('data-arrow');
-			var allItems = flexi(this).children().children().children().length;
-
-			flexi(this).children().children('.jQcarousel-ul').css('left', '0');
-
-			//Default option for arrow button
-			if (showItems >= allItems) {
-				if (arrowOption == 'disable') {
-					flexi(this).children('.pre').hide();
-					flexi(this).children('.next').hide();
-				} else if (arrowOption == 'visible') {
-					flexi(this).children('.pre').children().css('opacity', '0.4');
-					flexi(this).children('.pre').children().css('cursor', 'default');
-					flexi(this).children('.next').children().css('opacity', '0.4');
-					flexi(this).children('.next').children().css('cursor', 'default');
-				}
-			} else if (showItems < allItems) {
-				if (arrowOption == 'disable') {
-					flexi(this).children('.pre').hide();
-					flexi(this).children('.next').css('cursor', 'pointer');
-				} else if (arrowOption == 'visible') {
-					flexi(this).children('.pre').children().css('opacity', '0.4');
-					flexi(this).children('.pre').children().css('cursor', 'default');
-					flexi(this).children('.next').children().css('cursor', 'pointer');
-				}
-			}
+			defaultSetting(configuraltion, This, 'default');
 			//Action click on button arrow left and arrow right
-			var pre = flexi(this).children('div.pre');
-			var next = flexi(this).children('div.next');
+			var pre = This.children('div.pre');
+			var next = This.children('div.next');
 			pre.click(goLeft);
 			next.click(goRight);
 		});
