@@ -10,8 +10,26 @@ and open the template in the editor.
 		<link rel="stylesheet" type="text/css" href="css/jQcarousel.css">
 	</head>
 	<body>
+<!--
+		<div class="jQcarousel_1" data-arrow="1" data-items="3">
+			<div class="pre"></div>
+			<div class="jQcarousel-inner">
+				<ul class="jQcarousel-ul">
+					<li><img src="img/images.jpeg" alt=""/></li>
+					<li><img src="img/images2.jpeg" alt=""/></li>
+					<li><img src="img/images3.jpeg" alt=""/></li>
+					<li><img src="img/images4.jpeg" alt=""/></li>
+					<li><img src="img/images5.jpeg" alt=""/></li>
+					<li><img src="img/images6.jpeg" alt=""/></li>
+					<li><img src="img/images7.jpg" alt=""/></li>
+					<li><img src="img/images8.jpeg" alt=""/></li>
+					<li><img src="img/images9.jpeg" alt=""/></li>
+				</ul>
+			</div>
+			<div class="next"></div>
+		</div>-->
 
-		<div id ="jQcarousel_1">
+		<div class="jQcarousel_1" data-arrow="1" data-items="3" >
 			<div class="pre"></div>
 			<div class="jQcarousel-inner">
 				<ul class="jQcarousel-ul">
@@ -29,16 +47,12 @@ and open the template in the editor.
 			<div class="next"></div>
 		</div>
 
-		<div id="block">Hello</div>
 
 		<!--javascript include this place for more faster load-->
 		<script src="js/jquery-1.9.1.min.js"></script>
 		<script src="js/jQcarousel.js"></script>
 		<script>
-			$('#jQcarousel_1').jQcarousel({
-				arrowBtn : 1,
-				animateSpeed: 500
-			});
+			$('.jQcarousel_1').felxiCarousel();
 		</script>
 
 	</body>
